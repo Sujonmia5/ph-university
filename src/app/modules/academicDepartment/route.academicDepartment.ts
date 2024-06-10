@@ -1,5 +1,5 @@
 import express from 'express';
-import validateRequestData from '../middleware/validationRequest';
+import validateRequestData from '../../middleware/validationRequest';
 import { academicDepartmentZodSchema } from './validation.academicDepartment';
 import { academicDepartmentController } from './controller.academicDepartment';
 const route = express.Router();

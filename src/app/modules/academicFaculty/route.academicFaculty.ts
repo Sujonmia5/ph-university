@@ -1,5 +1,5 @@
 import express from 'express';
-import validateRequestData from '../middleware/validationRequest';
+import validateRequestData from '../../middleware/validationRequest';
 import { academicFacultyZodSchema } from './validation.academicFaculty';
 import { academicFacultyController } from './controller.academicFaculty';
 

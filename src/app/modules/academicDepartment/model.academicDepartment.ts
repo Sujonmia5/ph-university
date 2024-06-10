@@ -10,6 +10,7 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
       required: true,
       unique: true,
     },
+
     academicFaculty: {
       type: Schema.Types.ObjectId,
       required: true,
@@ -28,7 +29,7 @@ academicDepartmentSchema.pre('save', async function (next) {
     name: data.name,
   });
   if (isDepartmentExist) {
-    throw new AppError(400, 'Departments already created!');
+    throw new AppError(400, 'Departments already is already exists');
   }
   next();
 });
@@ -36,7 +37,6 @@ academicDepartmentSchema.pre('save', async function (next) {
 academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
   const { _id } = this.getQuery();
   const isAcademicFacultyExist = await MAcademicDepartment.findById(_id);
-
   if (!isAcademicFacultyExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Data not found');
   }

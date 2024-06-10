@@ -73,10 +73,6 @@ const deletedStudentIntoDB = async (id: string) => {
       },
     );
 
-    if (!deleteUser) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to deleted user');
-    }
-
     const deleteStudent = await MStudent.findOneAndUpdate(
       { id },
       { isDeleted: true },
@@ -85,9 +81,6 @@ const deletedStudentIntoDB = async (id: string) => {
         session,
       },
     );
-    if (!deleteStudent) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to deleted user');
-    }
 
     await session.commitTransaction();
     await session.endSession();
@@ -95,7 +88,7 @@ const deletedStudentIntoDB = async (id: string) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, 'Student delete to failed');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to deleted student');
   }
 };
 

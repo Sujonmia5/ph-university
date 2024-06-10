@@ -1,6 +1,6 @@
 import express from 'express';
 import { academicSemesterControllers } from './controller.academicSemester';
-import validateRequestData from '../middleware/validationRequest';
+import validateRequestData from '../../middleware/validationRequest';
 import { SemesterZodSchema } from './validation.academicSemester';
 
 const route = express.Router();

@@ -1,6 +1,6 @@
 import express from 'express';
 import { studentController } from './controller.student';
-import validateRequestData from '../middleware/validationRequest';
+import validateRequestData from '../../middleware/validationRequest';
 import { studentZodSchema } from './validation.student';
 const route = express.Router();
 
