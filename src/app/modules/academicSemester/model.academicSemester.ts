@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { TAcademicSemester, TMonths } from './interface.academicSemester';
+import { TAcademicSemester } from './interface.academicSemester';
 import { Months } from './constant.academicSemester';
 import AppError from '../../Error/appError';
 
@@ -42,6 +42,7 @@ academicSemesterSchema.pre('save', async function (next) {
   if (isSemesterExist) {
     throw new AppError(400, 'Academic semester is already created');
   }
+
   next();
 });
 

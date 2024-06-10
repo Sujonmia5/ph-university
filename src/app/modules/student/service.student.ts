@@ -64,7 +64,7 @@ const deletedStudentIntoDB = async (id: string) => {
   try {
     session.startTransaction();
 
-    const deleteUser = await MUser.findOneAndUpdate(
+    await MUser.findOneAndUpdate(
       { id },
       { isDeleted: true },
       {

@@ -24,12 +24,11 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
 );
 
 academicDepartmentSchema.pre('save', async function (next) {
-  const data = this;
   const isDepartmentExist = await MAcademicDepartment.findOne({
-    name: data.name,
+    name: this.name,
   });
   if (isDepartmentExist) {
-    throw new AppError(400, 'Departments already is already exists');
+    throw new AppError(400, 'Departments is already exists');
   }
   next();
 });
