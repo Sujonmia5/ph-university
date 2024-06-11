@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import globalErrorHandler from './app/middleware/globalErrorHandler';
@@ -11,6 +12,7 @@ app.use(cors());
 app.use('/api/v1', router);
 
 app.get('/', async (req: Request, res: Response) => {
+  // Promise.reject();
   res.send('hello world');
 });
 
