@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { userRoutes } from '../user/route.user';
-import { academicRoutes } from '../academicSemester/route.academicSemester';
-import { studentRoutes } from '../student/route.student';
-import { academicFacultyRoutes } from '../academicFaculty/route.academicFaculty';
-import { academicDepartmentRoutes } from '../academicDepartment/route.academicDepartment';
+import { userRoutes } from '../modules/user/route.user';
+import { studentRoutes } from '../modules/student/route.student';
+import { academicRoutes } from '../modules/academicSemester/route.academicSemester';
+import { academicFacultyRoutes } from '../modules/academicFaculty/route.academicFaculty';
+import { academicDepartmentRoutes } from '../modules/academicDepartment/route.academicDepartment';
 
 type TRoute = {
   path: string;
