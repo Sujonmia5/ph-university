@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 /* eslint-disable prefer-const */
 import httpStatus from 'http-status';
 import AppError from '../../Error/appError';
-import { MUser } from '../user/model.user';
 import { TStudent } from './interface.student';
 import { MStudent } from './model.student';
 import mongoose from 'mongoose';
-import QueryBuilder from '../../builder/queryBuilder';
 import { searchableFields } from './constant.student';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { MUser } from '../user/model.user';
 
 const getAllStudentIntoDB = async (query: Record<string, unknown>) => {
   // let searchTerm = '';
@@ -84,7 +85,7 @@ const getAllStudentIntoDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleStudentIntoDB = async (id: string) => {
-  const result = await MStudent.findOne({ id })
+  const result = await MStudent.findById(id)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -117,7 +118,7 @@ const updatedStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
     }
   }
 
-  const result = await MStudent.findOneAndUpdate({ id }, modifiedData, {
+  const result = await MStudent.findByIdAndUpdate(id, modifiedData, {
     new: true,
   });
   return result;
@@ -125,13 +126,13 @@ const updatedStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
 
 // deleted student services
 const deletedStudentIntoDB = async (id: string) => {
+  //
   const session = await mongoose.startSession();
-
   try {
     session.startTransaction();
 
-    await MUser.findOneAndUpdate(
-      { id },
+    const deleteStudent = await MStudent.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       {
         new: true,
@@ -139,8 +140,8 @@ const deletedStudentIntoDB = async (id: string) => {
       },
     );
 
-    const deleteStudent = await MStudent.findOneAndUpdate(
-      { id },
+    await MUser.findByIdAndUpdate(
+      deleteStudent?.userId,
       { isDeleted: true },
       {
         new: true,
@@ -149,12 +150,16 @@ const deletedStudentIntoDB = async (id: string) => {
     );
 
     await session.commitTransaction();
-    await session.endSession();
+
     return deleteStudent;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `${error?.message}` || 'Failed to deleted student',
+    );
+  } finally {
     await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to deleted student');
   }
 };
 

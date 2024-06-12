@@ -6,7 +6,9 @@ import { SemesterZodSchema } from './validation.academicSemester';
 const route = express.Router();
 
 route.get('/', academicSemesterControllers.academicSemesterGetAll);
+
 route.get('/:Id', academicSemesterControllers.academicSemesterGetId);
+
 route.put(
   '/:Id',
   validateRequestData(SemesterZodSchema.zodUpdatedAcademicSemesterSchema),

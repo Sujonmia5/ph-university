@@ -17,8 +17,9 @@ const createAcademicDepartmentController = catchAsync(async (req, res) => {
 });
 
 const getAllAcademicDepartmentController = catchAsync(async (req, res) => {
+  const query = req.query;
   const result =
-    await academicDepartmentService.getAllAcademicDepartmentIntoDB();
+    await academicDepartmentService.getAllAcademicDepartmentIntoDB(query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

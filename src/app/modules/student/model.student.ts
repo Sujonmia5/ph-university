@@ -152,18 +152,35 @@ const studentSchema = new Schema<TStudent>(
     },
   },
   {
+    toJSON: {
+      virtuals: true,
+    },
     timestamps: true,
     versionKey: false,
   },
 );
 
 studentSchema.pre('findOneAndUpdate', async function (next) {
-  const { id } = this.getQuery();
-  const isStudentExist = await MStudent.findOne({ id });
+  const { _id } = this.getQuery();
+  const isStudentExist = await MStudent.findById(_id);
   if (!isStudentExist) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Student not founded');
+  } else if (isStudentExist.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Student already deleted');
   }
   next();
 });
 
+studentSchema.virtual('fullName').get(function () {
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
+});
+
+studentSchema.pre('find', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('findOne', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
 export const MStudent = model<TStudent>('student', studentSchema);

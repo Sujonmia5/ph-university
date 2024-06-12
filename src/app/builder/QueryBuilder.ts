@@ -13,7 +13,7 @@ class QueryBuilder<T> {
   }
   // method search
   search(searchableFields: string[]) {
-    const searchTerm = this.query.searchTerm || '';
+    const searchTerm = this?.query?.searchTerm || '';
     if (searchTerm) {
       this.queryModel = this.queryModel.find({
         $or: searchableFields.map(
@@ -35,7 +35,7 @@ class QueryBuilder<T> {
   }
   //method sort
   sort() {
-    const sort = (this.query.sort as string) || '-createdAt';
+    const sort = (this?.query?.sort as string) || '-createdAt';
     this.queryModel = this.queryModel.sort(sort);
     return this;
   }
@@ -47,11 +47,10 @@ class QueryBuilder<T> {
     this.queryModel = this.queryModel.skip(skip).limit(limit);
     return this;
   }
-
   // method field
   fields() {
     const fields =
-      (this?.query?.fields as string).split(',').join(' ') || '-__V';
+      (this.query.fields as string)?.split(',')?.join(' ') || '-__v';
     this.queryModel = this.queryModel.select(fields);
     return this;
   }

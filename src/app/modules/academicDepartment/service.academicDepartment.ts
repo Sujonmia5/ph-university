@@ -3,6 +3,7 @@ import AppError from '../../Error/appError';
 import { TAcademicDepartment } from './interface.academicDepartment';
 import { MAcademicDepartment } from './model.academicDepartment';
 import { academicFacultyCheck } from './utils.academicDepartment';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
   const academic_faculty = await academicFacultyCheck(payload.academicFaculty);
@@ -16,8 +17,15 @@ const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
   return result;
 };
 
-const getAllAcademicDepartmentIntoDB = async () => {
-  const result = await MAcademicDepartment.find().populate('academicFaculty');
+const getAllAcademicDepartmentIntoDB = async (
+  query: Record<string, unknown>,
+) => {
+  const departmentQuery = new QueryBuilder(
+    MAcademicDepartment.find().populate('academicFaculty'),
+    query,
+  ).filter();
+
+  const result = await departmentQuery.queryModel;
   return result;
 };
 

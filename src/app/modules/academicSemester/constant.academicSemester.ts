@@ -33,3 +33,6 @@ export const SemesterNameAndCodeMapper: TSemesterNameAndCode = {
   Summer: '02',
   Fall: '03',
 };
+
+export const searchableFields = ['name', 'year', 'startMonth', 'endMonth'];
+export const excludesFields = ['name', 'year', 'startMonth', 'endMonth'];

@@ -10,7 +10,6 @@ export const bloodGroups: TBloodGroups[] = [
   'O+',
   'O-',
 ];
-
 export const searchableFields = [
   'name.firstName',
   'name.middleName',
@@ -18,4 +17,5 @@ export const searchableFields = [
   'email',
   'id',
 ];
+
 export const excludesFields = ['searchTerm', 'sort', 'page', 'limit', 'fields'];

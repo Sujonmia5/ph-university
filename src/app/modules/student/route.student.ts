@@ -7,13 +7,13 @@ const route = express.Router();
 route.get('/', studentController.controllerStudentGetAll);
 
 route.patch(
-  '/:studentId',
+  '/:id',
   validateRequestData(studentZodSchema.ZodValidationUpdatedStudentSchema),
   studentController.controllerStudentUpdated,
 );
 
-route.get('/:studentId', studentController.controllerStudentGetSingle);
+route.get('/:id', studentController.controllerStudentGetSingle);
 
-route.delete('/:studentId', studentController.controllerStudentDeleted);
+route.delete('/:id', studentController.controllerStudentDeleted);
 
 export const studentRoutes = route;
