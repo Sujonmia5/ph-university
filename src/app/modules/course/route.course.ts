@@ -1,6 +1,10 @@
 import express from 'express';
 import validateRequestData from '../../middleware/validationRequest';
-import { zodCourseSchema, zodUpdatedSchema } from './validation.course';
+import {
+  zodCourseFacultySchema,
+  zodCourseSchema,
+  zodUpdatedSchema,
+} from './validation.course';
 import { courseController } from './controller.course';
 
 const route = express.Router();
@@ -17,6 +21,16 @@ route.patch(
   '/:id',
   validateRequestData(zodUpdatedSchema),
   courseController.updatedCourseController,
+);
+route.put(
+  '/:courseId/assign-faculties',
+  validateRequestData(zodCourseFacultySchema),
+  courseController.assignCourseFacultyController,
+);
+route.delete(
+  '/:courseId/remove-faculties',
+  validateRequestData(zodCourseFacultySchema),
+  courseController.removeCourseFacultyController,
 );
 route.delete('/:id', courseController.deletedCourseController);
 

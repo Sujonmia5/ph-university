@@ -25,4 +25,8 @@ const zodCourseSchema = z.object({
 });
 
 const zodUpdatedSchema = zodCourseSchema.extend({}).partial();
-export { zodCourseSchema, zodUpdatedSchema };
+
+const zodCourseFacultySchema = z.object({
+  faculties: z.array(z.string()),
+});
+export { zodCourseSchema, zodUpdatedSchema, zodCourseFacultySchema };
