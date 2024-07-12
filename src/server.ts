@@ -2,31 +2,40 @@
 import mongoose from 'mongoose';
 import app from './app';
 import { config } from './app/config';
-// import { Server } from 'http';
+import { Server } from 'http';
+import createSuperAdmin from './app/DB';
 
-// let server: Server;
+let server: Server;
 
 async function main() {
-  await mongoose.connect(config.database_url as string);
+  try {
+    await mongoose.connect(config.database_url as string);
 
-  app.listen(config.port, () => {
-    console.log(`Example app listening on ${config.port}`);
-  });
+    createSuperAdmin();
+
+    app.listen(config.port, () => {
+      console.log(`Example app listening on ${config.port}`);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 main();
 
-// process.on('unhandledRejection', () => {
-//   console.log('unhandledRejection server shut down');
-//   if (server) {
-//     server.close(() => {
-//       process.exit(1);
-//     });
-//   }
-//   process.exit(1);
-// });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('unhandledRejection server shut down');
 
-// process.on('uncaughtException', () => {
-//   console.log('uncaughtException server shut down');
-//   process.exit(1);
-// });
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
+
+process.on('uncaughtException', () => {
+  console.log('uncaughtException server shut down');
+  process.exit(1);
+});

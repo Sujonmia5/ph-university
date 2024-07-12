@@ -58,66 +58,65 @@ const localGuardianSchema = z
   .strict();
 
 // student main zod schema
-const zodValidationStudentSchema = z
-  .object({
-    password: z
-      .string({
-        invalid_type_error: 'Password must be string',
-      })
-      .max(20, { message: 'Password can not be more then 20 character' })
-      .optional(),
-    student: z
-      .object({
-        name: nameSchema,
-        gender: z.enum(['male', 'female', 'other'], {
-          required_error: 'Gender is required',
-          invalid_type_error: "'{VALUE} is not a valid',",
-        }),
-        dateOfBirth: z.string({
-          invalid_type_error: 'Date of birth must be a string',
-          required_error: 'Date of birth is required',
-        }),
-        bloodGroup: z
-          .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-          .optional(),
-        email: z
-          .string({ required_error: 'Email is required' })
-          .email({ message: 'Invalid email address' })
-          .endsWith('@gmail.com', { message: 'Invalid gmail address' }),
-        contactNo: z
-          .string({
-            required_error: 'Phone number is required',
-            invalid_type_error: 'Phone number must be a string',
-          })
-          .min(11, { message: 'Phone number must be 11 digit' })
-          .max(11, { message: 'Phone number must be 11 digit' }),
-        emergencyContactNo: z
-          .string({
-            required_error: 'Phone number is required',
-            invalid_type_error: 'Phone number must be a string',
-          })
-          .min(11, { message: 'Emergency phone number must be 11 digit' })
-          .max(11, { message: 'Emergency phone number must be 11 digit' }),
-        presentAddress: z.string({
-          message: 'Present address is required',
-        }),
-        permanentAddress: z.string({
-          message: 'Permanent address is required',
-        }),
-        guardian: guardianSchema,
-        localGuardian: localGuardianSchema,
-        profileImage: z.string({ message: 'Profile image is required' }),
-        admissionSemester: z.string({
-          message: 'Admission semester is required',
-        }),
-        academicDepartment: z.string({
-          message: 'Academic Department is required',
-        }),
-        isDeleted: z.boolean().default(false).optional(),
-      })
-      .strict(),
-  })
-  .strict();
+const zodValidationStudentSchema = z.object({
+  password: z
+    .string({
+      invalid_type_error: 'Password must be string',
+    })
+    .max(20, { message: 'Password can not be more then 20 character' })
+    .optional(),
+  student: z
+    .object({
+      name: nameSchema,
+      gender: z.enum(['male', 'female', 'other'], {
+        required_error: 'Gender is required',
+        invalid_type_error: "'{VALUE} is not a valid',",
+      }),
+      dateOfBirth: z.string({
+        invalid_type_error: 'Date of birth must be a string',
+        required_error: 'Date of birth is required',
+      }),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      email: z
+        .string({ required_error: 'Email is required' })
+        .email({ message: 'Invalid email address' })
+        .endsWith('@gmail.com', { message: 'Invalid gmail address' }),
+      contactNo: z
+        .string({
+          required_error: 'Phone number is required',
+          invalid_type_error: 'Phone number must be a string',
+        })
+        .min(11, { message: 'Phone number must be 11 digit' })
+        .max(11, { message: 'Phone number must be 11 digit' }),
+      emergencyContactNo: z
+        .string({
+          required_error: 'Phone number is required',
+          invalid_type_error: 'Phone number must be a string',
+        })
+        .min(11, { message: 'Emergency phone number must be 11 digit' })
+        .max(11, { message: 'Emergency phone number must be 11 digit' }),
+      presentAddress: z.string({
+        message: 'Present address is required',
+      }),
+      permanentAddress: z.string({
+        message: 'Permanent address is required',
+      }),
+      guardian: guardianSchema,
+      localGuardian: localGuardianSchema,
+      profileImage: z.string({ message: 'Profile image is required' }),
+      admissionSemester: z.string({
+        message: 'Admission semester is required',
+      }),
+      academicDepartment: z.string({
+        message: 'Academic Department is required',
+      }),
+      isDeleted: z.boolean().default(false).optional(),
+    })
+    .strict(),
+});
+// .strict();
 
 //
 // student updated name zod schema
@@ -211,13 +210,12 @@ const ZodValidationUpdatedStudentSchema = z
     }),
     guardian: updatedGuardianSchema,
     localGuardian: updateLocalGuardianSchema,
-    profileImage: z.string({ message: 'Profile image is required' }),
+    profileImage: z.string({ message: 'Profile image is required' }).optional(),
     admissionSemester: z.string({
       message: 'Admission semester is required',
     }),
     isDeleted: z.boolean().default(false).optional(),
   })
-  .strict()
   .partial();
 
 export const studentZodSchema = {

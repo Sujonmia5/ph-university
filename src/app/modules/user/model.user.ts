@@ -1,11 +1,16 @@
 import { Schema, model } from 'mongoose';
-import { TUser } from './interface.user';
+import { TUser, TUserModel } from './interface.user';
 import bcrypt from 'bcrypt';
 import { config } from '../../config';
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, TUserModel>(
   {
     id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -13,6 +18,11 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: true,
+      select: 0,
+    },
+    passwordChangeAt: {
+      type: Date,
+      default: new Date(),
     },
     needPasswordChange: {
       type: Boolean,
@@ -20,7 +30,7 @@ const userSchema = new Schema<TUser>(
     },
     role: {
       type: String,
-      enum: ['student', 'faculty', 'admin'],
+      enum: ['student', 'faculty', 'admin', 'superAdmin'],
     },
     status: {
       type: String,
@@ -51,4 +61,23 @@ userSchema.post('save', async function (doc, next) {
   next();
 });
 
-export const MUser = model<TUser>('user', userSchema);
+userSchema.statics.isUserExistByCustomId = async function (id) {
+  return await MUser.findOne({ id }).select('+password');
+};
+userSchema.statics.isPasswordMatch = async function (
+  planPassword,
+  hashPassword,
+) {
+  return await bcrypt.compare(planPassword, hashPassword);
+};
+
+userSchema.statics.isJWTTokenTimeChecker = function (
+  tokenTime: number,
+  passwordChangeTime: Date,
+) {
+  const passwordChangeTimeMinute =
+    new Date(passwordChangeTime).getTime() / 1000;
+  return passwordChangeTimeMinute > tokenTime;
+};
+
+export const MUser = model<TUser, TUserModel>('user', userSchema);

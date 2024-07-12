@@ -7,6 +7,10 @@ import { academicDepartmentRoutes } from '../modules/academicDepartment/route.ac
 import { facultyRoutes } from '../modules/faculty/route.faculty';
 import { adminRoutes } from '../modules/admin/route.admin';
 import { courseRoutes } from '../modules/course/route.course';
+import { semesterRegistrationRoutes } from '../modules/semesterRegistration/route.semesterRegistration';
+import { offeredCourseRoutes } from '../modules/offeredCourse/route.offeredCourse';
+import { authRoutes } from '../modules/Auth/route.auth';
+import { enrollCourseRoutes } from '../modules/EnrolledCourse/route.enrolledCourse';
 
 type TRoute = {
   path: string;
@@ -47,6 +51,22 @@ const moduleRoute: TRoute[] = [
   {
     path: '/courses',
     route: courseRoutes,
+  },
+  {
+    path: '/semester-registrations',
+    route: semesterRegistrationRoutes,
+  },
+  {
+    path: '/offered-courses',
+    route: offeredCourseRoutes,
+  },
+  {
+    path: '/auth',
+    route: authRoutes,
+  },
+  {
+    path: '/enroll-courses',
+    route: enrollCourseRoutes,
   },
 ];
 

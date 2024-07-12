@@ -34,7 +34,7 @@ const zodAdminValidationSchema = z.object({
       .max(11, { message: 'Emergency contact number must be 11 digit' }),
     presentAddress: z.string({ message: 'Present address is required' }),
     permanentAddress: z.string({ message: 'Permanent address is required' }),
-    profileImage: z.string({ message: 'Profile image is required' }),
+    profileImage: z.string({ message: 'Profile image is required' }).optional(),
     isDeleted: z.boolean().optional(),
   }),
 });

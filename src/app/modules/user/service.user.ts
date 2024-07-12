@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from '../../config';
 import { TStudent } from '../student/interface.student';
 import { MUser } from './model.user';
@@ -13,12 +14,18 @@ import { MFaculty } from '../faculty/model.faculty';
 import httpStatus from 'http-status';
 import { TAdmin } from '../admin/interface.admin';
 import { MAdmin } from '../admin/model.admin';
+import { imageUploadToCloudinary } from '../utils/imageUpload';
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (
+  file: any,
+  password: string,
+  payload: TStudent,
+) => {
   const userData: Partial<TUser> = {};
 
   userData.password = password || (config.default_password as string);
   userData.role = 'student';
+  userData.email = payload.email;
 
   const admissionSemester = await MAcademicSemester.findById(
     payload.admissionSemester,
@@ -49,16 +56,25 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
       throw new AppError(400, 'Failed to created user');
     }
 
+    const imageName = `PH-${newUser[0].id}`;
+    const path = file.path;
+    const imageUploadResponse = await imageUploadToCloudinary(imageName, path);
+
     payload.id = newUser[0].id;
     payload.userId = newUser[0]._id;
+    payload.profileImage = (
+      imageUploadResponse as { secure_url: string }
+    ).secure_url;
 
     //transaction-2
     const result = await MStudent.create([payload], { session });
     if (!result.length) {
       throw new AppError(400, 'Failed to created user');
     }
+
     await session.commitTransaction();
     await session.endSession();
+
     return result;
   } catch (error) {
     await session.abortTransaction();
@@ -67,7 +83,11 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   }
 };
 
-const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+const createFacultyIntoDB = async (
+  file: any,
+  password: string,
+  payload: TFaculty,
+) => {
   const userDoc: Partial<TUser> = {};
 
   const academicDepartment = await MAcademicDepartment.findOne({
@@ -81,6 +101,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
   userDoc.password = password || (config.default_password as string);
   userDoc.role = 'faculty';
+  userDoc.email = payload.email;
 
   const session = await mongoose.startSession();
   try {
@@ -88,25 +109,44 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     userDoc.id = `F-${await generatedFacultyId(userDoc.role)}`;
 
     const newUser = await MUser.create([userDoc], { session });
+    if (!newUser.length) {
+      throw new AppError(httpStatus.FORBIDDEN, 'Failed to create user');
+    }
+
+    const imageName = `ph-${newUser[0].id}`;
+    const path = file.path;
+
+    const imageUploadResponse = await imageUploadToCloudinary(imageName, path);
 
     payload.id = newUser[0].id;
     payload.userId = newUser[0]._id;
+    payload.profileImage = (
+      imageUploadResponse as { secure_url: string }
+    ).secure_url;
 
     const result = await MFaculty.create([payload], { session });
+    if (!result.length) {
+      throw new AppError(httpStatus.FORBIDDEN, 'Failed to create Faculty');
+    }
 
     await session.commitTransaction();
     await session.endSession();
     return result;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to created Faculty');
+    return new AppError(httpStatus.BAD_REQUEST, 'Failed to created faculty');
   }
 };
 
-const createAdminIntoDB = async (password: string, payload: TAdmin) => {
+const createAdminIntoDB = async (
+  file: any,
+  password: string,
+  payload: TAdmin,
+) => {
   const userDoc: Partial<TUser> = {};
   userDoc.role = 'admin';
+  userDoc.email = payload.email;
   userDoc.password = password || config.default_password;
 
   const session = await mongoose.startSession();
@@ -115,23 +155,54 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     userDoc.id = `A-${await generatedFacultyId(userDoc.role)}`;
     const newUser = await MUser.create([userDoc], { session });
 
+    const imageName = `ph-${newUser[0].id}`;
+    const path = file.path;
+    const imageUploadResponse = await imageUploadToCloudinary(imageName, path);
+
     payload.id = newUser[0].id;
     payload.userId = newUser[0]._id;
+    payload.profileImage = (
+      imageUploadResponse as { secure_url: string }
+    ).secure_url;
 
     const result = await MAdmin.create([payload], { session });
     await session.commitTransaction();
     return result;
   } catch (error) {
     await session.abortTransaction();
+    await session.endSession();
 
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to admin created');
-  } finally {
-    await session.endSession();
   }
+};
+
+const changeStatusIntoDB = async (id: string, payload: { status: string }) => {
+  const result = await MUser.findOneAndUpdate({ id }, payload, { new: true });
+  return result;
+};
+
+const getMe = async (id: string, role: string) => {
+  let result;
+
+  if (role === 'student') {
+    result = await MStudent.findOne({ id });
+  }
+
+  if (role === 'faculty') {
+    result = await MFaculty.findOne({ id });
+  }
+
+  if (role === 'admin') {
+    result = await MAdmin.findOne({ id });
+  }
+
+  return result;
 };
 
 export const userService = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  getMe,
+  changeStatusIntoDB,
 };

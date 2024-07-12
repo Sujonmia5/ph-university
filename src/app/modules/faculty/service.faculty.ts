@@ -19,7 +19,8 @@ const getAllFacultyIntoDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await facultyQuery.queryModel;
-  return result;
+  const meta = await facultyQuery.countTotal();
+  return { meta, result };
 };
 
 const getSingleFacultyIntoDB = async (id: string) => {

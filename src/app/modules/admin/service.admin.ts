@@ -7,9 +7,7 @@ import { MUser } from '../user/model.user';
 import AppError from '../../Error/appError';
 import httpStatus from 'http-status';
 
-const getAllAdminFromDB = async (
-  query: Record<string, unknown>,
-): Promise<TAdmin[] | null> => {
+const getAllAdminFromDB = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(MAdmin.find(), query)
     .search(searchableFields)
     .filter()
@@ -18,7 +16,8 @@ const getAllAdminFromDB = async (
     .fields();
 
   const result = await adminQuery.queryModel;
-  return result;
+  const meta = await adminQuery.countTotal();
+  return { meta, result };
 };
 
 const getSingleAdminFromDB = async (id: string): Promise<TAdmin | null> => {

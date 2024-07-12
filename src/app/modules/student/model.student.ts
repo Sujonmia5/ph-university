@@ -184,4 +184,5 @@ studentSchema.pre('findOne', async function (next) {
   this.find({ isDeleted: { $ne: true } });
   next();
 });
+
 export const MStudent = model<TStudent>('student', studentSchema);

@@ -73,7 +73,18 @@ const getAllStudentIntoDB = async (query: Record<string, unknown>) => {
   //     },
   //   });
 
-  const studentQuery = new QueryBuilder(MStudent.find(), query)
+  const studentQuery = new QueryBuilder(
+    MStudent.find()
+      .populate('userId')
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      }),
+    query,
+  )
     .search(searchableFields)
     .filter()
     .sort()
@@ -81,7 +92,11 @@ const getAllStudentIntoDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await studentQuery.queryModel;
-  return result;
+  const meta = await studentQuery.countTotal();
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleStudentIntoDB = async (id: string) => {
