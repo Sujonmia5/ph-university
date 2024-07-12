@@ -63,7 +63,6 @@ export const ZodOfferedCourseSchema = z
     startTime: startTimeSchema,
     endTime: endTimeSchema,
   })
-  .strict()
   .superRefine((val, ctx) => {
     const [startHour, startMinute] = val.startTime.split(':').map(Number);
     const [endHour, endMinute] = val.endTime.split(':').map(Number);
@@ -92,7 +91,6 @@ export const ZodOfferedCourseUpdateSchema = z
     startTime: startTimeSchema,
     endTime: endTimeSchema,
   })
-  .strict()
   .superRefine((val, ctx) => {
     const [startHour, startMinute] = val.startTime.split(':').map(Number);
     const [endHour, endMinute] = val.endTime.split(':').map(Number);

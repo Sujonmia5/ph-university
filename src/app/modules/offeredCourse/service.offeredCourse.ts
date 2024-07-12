@@ -72,7 +72,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
 
   const isFacultyExist = await MFaculty.findById(faculty);
   if (!isFacultyExist) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Faculty is not found! 2');
+    throw new AppError(httpStatus.NOT_FOUND, 'Faculty is not found!');
   }
 
   const isAcademicFacultyAndAcademicDepartmentExist =

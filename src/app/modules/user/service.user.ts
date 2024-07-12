@@ -56,15 +56,21 @@ const createStudentIntoDB = async (
       throw new AppError(400, 'Failed to created user');
     }
 
-    const imageName = `PH-${newUser[0].id}`;
-    const path = file.path;
-    const imageUploadResponse = await imageUploadToCloudinary(imageName, path);
+    if (file) {
+      const imageName = `PH-${newUser[0].id}`;
+      const path = file.path;
+      const imageUploadResponse = await imageUploadToCloudinary(
+        imageName,
+        path,
+      );
+      payload.profileImage = (
+        imageUploadResponse as { secure_url: string }
+      ).secure_url;
+    }
 
     payload.id = newUser[0].id;
     payload.userId = newUser[0]._id;
-    payload.profileImage = (
-      imageUploadResponse as { secure_url: string }
-    ).secure_url;
+    payload.academicFaculty = academicDepartment.academicFaculty;
 
     //transaction-2
     const result = await MStudent.create([payload], { session });
@@ -76,9 +82,12 @@ const createStudentIntoDB = async (
     await session.endSession();
 
     return result;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
+    if (error?.code === 11000) {
+      throw new AppError(httpStatus.CONFLICT, error?.message);
+    }
     throw new AppError(400, 'Failed to created student');
   }
 };
@@ -93,12 +102,14 @@ const createFacultyIntoDB = async (
   const academicDepartment = await MAcademicDepartment.findOne({
     _id: payload.academicDepartment,
   });
+
   if (!academicDepartment) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       'Academic Department not founded',
     );
   }
+
   userDoc.password = password || (config.default_password as string);
   userDoc.role = 'faculty';
   userDoc.email = payload.email;
@@ -106,6 +117,7 @@ const createFacultyIntoDB = async (
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
+
     userDoc.id = `F-${await generatedFacultyId(userDoc.role)}`;
 
     const newUser = await MUser.create([userDoc], { session });
@@ -113,16 +125,22 @@ const createFacultyIntoDB = async (
       throw new AppError(httpStatus.FORBIDDEN, 'Failed to create user');
     }
 
-    const imageName = `ph-${newUser[0].id}`;
-    const path = file.path;
+    if (file) {
+      const imageName = `ph-${newUser[0].id}`;
+      const path = file.path;
 
-    const imageUploadResponse = await imageUploadToCloudinary(imageName, path);
+      const imageUploadResponse = await imageUploadToCloudinary(
+        imageName,
+        path,
+      );
+
+      payload.profileImage = (
+        imageUploadResponse as { secure_url: string }
+      ).secure_url;
+    }
 
     payload.id = newUser[0].id;
     payload.userId = newUser[0]._id;
-    payload.profileImage = (
-      imageUploadResponse as { secure_url: string }
-    ).secure_url;
 
     const result = await MFaculty.create([payload], { session });
     if (!result.length) {
@@ -131,11 +149,15 @@ const createFacultyIntoDB = async (
 
     await session.commitTransaction();
     await session.endSession();
+
     return result;
   } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
-    return new AppError(httpStatus.BAD_REQUEST, 'Failed to created faculty');
+    if (error?.code === 11000) {
+      throw new AppError(httpStatus.CONFLICT, error?.message);
+    }
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to created faculty');
   }
 };
 
@@ -155,23 +177,30 @@ const createAdminIntoDB = async (
     userDoc.id = `A-${await generatedFacultyId(userDoc.role)}`;
     const newUser = await MUser.create([userDoc], { session });
 
-    const imageName = `ph-${newUser[0].id}`;
-    const path = file.path;
-    const imageUploadResponse = await imageUploadToCloudinary(imageName, path);
+    if (file) {
+      const imageName = `ph-${newUser[0].id}`;
+      const path = file.path;
+      const imageUploadResponse = await imageUploadToCloudinary(
+        imageName,
+        path,
+      );
+      payload.profileImage = (
+        imageUploadResponse as { secure_url: string }
+      ).secure_url;
+    }
 
     payload.id = newUser[0].id;
     payload.userId = newUser[0]._id;
-    payload.profileImage = (
-      imageUploadResponse as { secure_url: string }
-    ).secure_url;
 
     const result = await MAdmin.create([payload], { session });
     await session.commitTransaction();
     return result;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
-
+    if (error?.code === 11000) {
+      throw new AppError(httpStatus.CONFLICT, error?.message);
+    }
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to admin created');
   }
 };

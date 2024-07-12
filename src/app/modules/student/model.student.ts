@@ -13,15 +13,15 @@ const studentNameSchema = new Schema<TStudentName>(
   {
     firstName: {
       type: String,
-      required: [true, 'First name is required'],
+      required: true,
     },
     middleName: {
       type: String,
-      required: [true, 'Middle name is required'],
+      required: true,
     },
     lastName: {
       type: String,
-      required: [true, 'Last name is required'],
+      required: true,
     },
   },
   { _id: false },
@@ -31,19 +31,19 @@ const guardianSchema = new Schema<TGuardian>(
   {
     fatherName: {
       type: String,
-      required: [true, 'Father name is required'],
+      required: true,
     },
     fatherOccupation: {
       type: String,
-      required: [true, 'Father Occupation is required'],
+      required: true,
     },
     contactNo: {
       type: String,
-      required: [true, 'Father ContactNo is required'],
+      required: true,
     },
     emergencyContactNo: {
       type: String,
-      required: [true, 'Emergency Contact is required'],
+      required: true,
     },
   },
   { _id: false },
@@ -53,19 +53,19 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
   {
     name: {
       type: String,
-      required: [true, 'Local Guardian is required'],
+      required: true,
     },
     occupation: {
       type: String,
-      required: [true, 'Local Guardian Occupation is required'],
+      required: true,
     },
     contactNo: {
       type: String,
-      required: [true, 'Father ContactNo is required'],
+      required: true,
     },
     emergencyContactNo: {
       type: String,
-      required: [true, 'Emergency Contact is required'],
+      required: true,
     },
   },
   { _id: false },
@@ -75,18 +75,18 @@ const studentSchema = new Schema<TStudent>(
   {
     id: {
       type: String,
-      required: [true, 'Id is required'],
+      required: true,
       unique: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
-      required: [true, 'User ID is required'],
+      required: true,
       unique: true,
       ref: 'user',
     },
     name: {
       type: studentNameSchema,
-      required: [true, 'Name is required'],
+      required: true,
     },
     gender: {
       type: String,
@@ -94,11 +94,11 @@ const studentSchema = new Schema<TStudent>(
         values: ['male', 'female', 'Other'],
         message: '{VALUE} is not a valid gender',
       },
-      required: [true, 'Gender is required'],
+      required: true,
     },
     dateOfBirth: {
       type: Date,
-      required: [true, 'Date is required'],
+      required: true,
     },
     bloodGroup: {
       type: String,
@@ -106,45 +106,48 @@ const studentSchema = new Schema<TStudent>(
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: true,
     },
     contactNo: {
       type: String,
-      required: [true, 'Contact number is required'],
+      required: true,
     },
     emergencyContactNo: {
       type: String,
-      required: [true, 'Emergency contact number is required'],
+      required: true,
     },
     presentAddress: {
       type: String,
-      required: [true, 'Present address is required'],
+      required: true,
     },
     permanentAddress: {
       type: String,
-      required: [true, 'Permanent address is required'],
+      required: true,
     },
     guardian: {
       type: guardianSchema,
-      required: [true, 'Guardian info is required'],
+      required: true,
     },
     localGuardian: {
       type: localGuardianSchema,
-      required: [true, 'Local Guardian info is required'],
+      required: true,
     },
     profileImage: {
       type: String,
-      required: [true, 'Profile Image is required'],
+      default: '',
     },
     admissionSemester: {
       type: Schema.Types.ObjectId,
-      required: [true, 'Semester id is required'],
+      required: true,
       ref: 'academic_semester',
     },
-
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'faculty',
+    },
     academicDepartment: {
       type: Schema.Types.ObjectId,
-      required: [true, 'Department id is required'],
+      required: true,
       ref: 'academic_department',
     },
     isDeleted: {

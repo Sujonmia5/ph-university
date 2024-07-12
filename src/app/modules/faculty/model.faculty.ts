@@ -82,7 +82,7 @@ const facultySchema = new Schema<TFaculty>(
     },
     profileImage: {
       type: String,
-      required: true,
+      default: '',
     },
     isDeleted: {
       type: Boolean,

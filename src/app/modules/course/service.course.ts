@@ -7,9 +7,24 @@ import AppError from '../../Error/appError';
 import httpStatus from 'http-status';
 
 const createdCourseIntoDB = async (payload: TCourse) => {
+  const { preRequisiteCourses } = payload;
+
+  if (preRequisiteCourses && preRequisiteCourses.length) {
+    const courseId = preRequisiteCourses.map((course) => course.course);
+    for (const id of courseId) {
+      const data = await MCourse.findById(id);
+      if (!data) {
+        throw new AppError(
+          httpStatus.NOT_FOUND,
+          'Pre Requisite course is not founded!',
+        );
+      }
+    }
+  }
   const result = await MCourse.create(payload);
   return result;
 };
+
 const getAllCourseFromDB = async (query: Record<string, unknown>) => {
   const courseQuery = new QueryBuilder(
     MCourse.find().populate('preRequisiteCourses.course'),
@@ -106,6 +121,10 @@ const assignCourseFacultyIntoDB = async (
   id: string,
   payload: Partial<TCourseFaculty>,
 ) => {
+  const courseExist = await MCourse.findById(id);
+  if (!courseExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'course is not founded');
+  }
   const result = await MCourseFaculty.findByIdAndUpdate(
     id,
     {
