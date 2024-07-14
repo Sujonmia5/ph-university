@@ -123,49 +123,47 @@ const zodValidationStudentSchema = z.object({
 const updatedNameSchema = nameSchema.extend({}).strict().optional();
 
 // student updated guardian zod schema
-const updatedGuardianSchema = z
-  .object({
-    fatherName: z.string({ message: 'Father name is required' }).optional(),
-    fatherOccupation: z
-      .string({ message: 'Father Occupation is required' })
-      .optional(),
-    contactNo: z
-      .string({ message: 'guardian phone number is required' })
-      .startsWith('01', { message: 'guardian number start with 01' })
-      .min(11, { message: 'guardian contact number must be 11 digit' })
-      .max(11, { message: 'guardian contact number must be 11 digit' })
-      .optional(),
-    emergencyContactNo: z
-      .string({ message: 'guardian emergency Contact number is required' })
-      .startsWith('01', { message: 'guardian number start with 01' })
-      .min(11, { message: 'guardian emergency number must be 11 digit' })
-      .max(11, { message: 'guardian emergency number must be 11 digit' })
-      .optional(),
-  })
-  .strict();
+const updatedGuardianSchema = z.object({
+  fatherName: z.string({ message: 'Father name is required' }).optional(),
+  fatherOccupation: z
+    .string({ message: 'Father Occupation is required' })
+    .optional(),
+  contactNo: z
+    .string({ message: 'guardian phone number is required' })
+    .startsWith('01', { message: 'guardian number start with 01' })
+    .min(11, { message: 'guardian contact number must be 11 digit' })
+    .max(11, { message: 'guardian contact number must be 11 digit' })
+    .optional(),
+  emergencyContactNo: z
+    .string({ message: 'guardian emergency Contact number is required' })
+    .startsWith('01', { message: 'guardian number start with 01' })
+    .min(11, { message: 'guardian emergency number must be 11 digit' })
+    .max(11, { message: 'guardian emergency number must be 11 digit' })
+    .optional(),
+});
+// .strict();
 
-const updateLocalGuardianSchema = z
-  .object({
-    name: z.string({ message: 'Local guardian name is required' }).optional(),
-    occupation: z
-      .string({ message: 'Local guardian Occupation is required' })
-      .optional(),
-    contactNo: z
-      .string({ message: 'Local guardian phone number is required' })
-      .startsWith('01', { message: 'Local guardian number start with 01' })
-      .min(11, { message: 'Local guardian number must be 11 digit' })
-      .max(11, { message: 'Local guardian number must be 11 digit' })
-      .optional(),
-    emergencyContactNo: z
-      .string({
-        message: 'Local guardian emergency Contact number is required',
-      })
-      .startsWith('01', { message: 'Local guardian number start with 01' })
-      .min(11, { message: 'Local guardian Emergency number must be 11 digit' })
-      .max(11, { message: 'Local guardian Emergency number must be 11 digit' })
-      .optional(),
-  })
-  .strict();
+const updateLocalGuardianSchema = z.object({
+  name: z.string({ message: 'Local guardian name is required' }).optional(),
+  occupation: z
+    .string({ message: 'Local guardian Occupation is required' })
+    .optional(),
+  contactNo: z
+    .string({ message: 'Local guardian phone number is required' })
+    .startsWith('01', { message: 'Local guardian number start with 01' })
+    .min(11, { message: 'Local guardian number must be 11 digit' })
+    .max(11, { message: 'Local guardian number must be 11 digit' })
+    .optional(),
+  emergencyContactNo: z
+    .string({
+      message: 'Local guardian emergency Contact number is required',
+    })
+    .startsWith('01', { message: 'Local guardian number start with 01' })
+    .min(11, { message: 'Local guardian Emergency number must be 11 digit' })
+    .max(11, { message: 'Local guardian Emergency number must be 11 digit' })
+    .optional(),
+});
+// .strict();
 // updated zod validation schema
 
 const ZodValidationUpdatedStudentSchema = z

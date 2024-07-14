@@ -7,36 +7,64 @@ import {
 } from './validation.course';
 import { courseController } from './controller.course';
 import auth from '../../middleware/auth';
+import { User_Role } from '../user/constants.user';
 
 const route = express.Router();
 
 route.post(
   '/create-course',
-  auth('admin'),
+  auth(User_Role.superAdmin, User_Role.admin),
   validateRequestData(zodCourseSchema),
   courseController.createCourseController,
 );
 
-route.get('/', courseController.getAllCourseController);
-route.get('/:id', courseController.getSingleCourseController);
+route.get(
+  '/',
+  auth(User_Role.superAdmin, User_Role.admin, User_Role.faculty),
+  courseController.getAllCourseController,
+);
+
+route.get(
+  '/:id',
+  auth(User_Role.superAdmin, User_Role.admin, User_Role.faculty),
+  courseController.getSingleCourseController,
+);
+
 route.patch(
   '/:id',
-  auth('admin'),
+  auth(User_Role.superAdmin, User_Role.admin),
   validateRequestData(zodUpdatedSchema),
   courseController.updatedCourseController,
 );
 route.put(
   '/:courseId/assign-faculties',
-  auth('admin'),
+  auth(User_Role.superAdmin, User_Role.admin),
   validateRequestData(zodCourseFacultySchema),
   courseController.assignCourseFacultyController,
 );
+
 route.delete(
   '/:courseId/remove-faculties',
-  auth('admin'),
+  auth(User_Role.superAdmin, User_Role.admin),
   validateRequestData(zodCourseFacultySchema),
   courseController.removeCourseFacultyController,
 );
-route.delete('/:id', auth('admin'), courseController.deletedCourseController);
+
+route.get(
+  '/:courseId/get-faculties',
+  auth(
+    User_Role.superAdmin,
+    User_Role.admin,
+    User_Role.faculty,
+    User_Role.student,
+  ),
+  courseController.getCourseFacultyController,
+);
+
+route.delete(
+  '/:id',
+  auth(User_Role.superAdmin, User_Role.admin),
+  courseController.deletedCourseController,
+);
 
 export const courseRoutes = route;

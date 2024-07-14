@@ -7,10 +7,10 @@ export const marksToGradeConverter = (courseMarks: TCourseMarks) => {
     gradePoints: 0,
   };
   const totalNumber =
-    Math.ceil(courseMarks.classTest1 * 0.1) +
-    Math.ceil(courseMarks.midTerm * 0.2) +
-    Math.ceil(courseMarks.classTest2 * 0.3) +
-    Math.ceil(courseMarks.finalTerm * 0.5);
+    courseMarks.classTest1 +
+    courseMarks.midTerm +
+    courseMarks.classTest2 +
+    courseMarks.finalTerm;
   /*
    * F = 0-29
    * D = 30-49

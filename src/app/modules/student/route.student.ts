@@ -8,26 +8,26 @@ const route = express.Router();
 
 route.get(
   '/',
-  auth('admin', 'faculty'),
+  auth(User_Role.admin, User_Role.superAdmin),
   studentController.controllerStudentGetAll,
 );
 
 route.patch(
   '/:id',
-  auth(User_Role.student),
+  auth(User_Role.superAdmin, User_Role.admin),
   validateRequestData(studentZodSchema.ZodValidationUpdatedStudentSchema),
   studentController.controllerStudentUpdated,
 );
 
 route.get(
   '/:id',
-  auth(User_Role.faculty, User_Role.admin),
+  auth(User_Role.faculty, User_Role.admin, User_Role.superAdmin),
   studentController.controllerStudentGetSingle,
 );
 
 route.delete(
   '/:id',
-  auth(User_Role.admin),
+  auth(User_Role.admin, User_Role.superAdmin),
   studentController.controllerStudentDeleted,
 );
 

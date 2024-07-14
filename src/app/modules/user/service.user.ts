@@ -85,6 +85,7 @@ const createStudentIntoDB = async (
   } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
+
     if (error?.code === 11000) {
       throw new AppError(httpStatus.CONFLICT, error?.message);
     }

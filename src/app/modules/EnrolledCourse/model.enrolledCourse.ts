@@ -12,7 +12,7 @@ const courseMarksSchema = new Schema(
     midTerm: {
       type: Number,
       min: 0,
-      max: 10,
+      max: 30,
       default: 0,
     },
     classTest2: {
@@ -24,7 +24,7 @@ const courseMarksSchema = new Schema(
     finalTerm: {
       type: Number,
       min: 0,
-      max: 10,
+      max: 50,
       default: 0,
     },
   },

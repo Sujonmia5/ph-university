@@ -7,22 +7,26 @@ const route = express.Router();
 
 route.get(
   '/',
-  auth(User_Role.admin),
+  auth(User_Role.admin, User_Role.superAdmin),
   facultyController.getAllFacultyController,
 );
 
 route.get(
   '/:id',
-  auth(User_Role.admin),
+  auth(User_Role.admin, User_Role.superAdmin),
   facultyController.getSingleFacultyController,
 );
 
 route.patch(
   '/:id',
-  auth(User_Role.faculty),
+  auth(User_Role.admin, User_Role.superAdmin),
   facultyController.updateSingleFacultyController,
 );
 
-route.delete('/:id', facultyController.deleteSingleFacultyController);
+route.delete(
+  '/:id',
+  auth(User_Role.superAdmin, User_Role.admin),
+  facultyController.deleteSingleFacultyController,
+);
 
 export const facultyRoutes = route;

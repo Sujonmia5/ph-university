@@ -16,15 +16,18 @@ const createAcademicFacultyController = catchAsync(async (req, res) => {
 });
 
 const getAllAcademicFacultyController = catchAsync(async (req, res) => {
-  const result = await academicFacultyService.getAllAcademicFacultyIntoDB();
-  if (!result.length) {
+  const result = await academicFacultyService.getAllAcademicFacultyIntoDB(
+    req.query,
+  );
+  if (!result.result.length) {
     throw new AppError(404, 'Data not founded');
   }
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Academic Faculty fetch successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

@@ -14,7 +14,7 @@ const route = express.Router();
 
 route.post(
   '/create-student',
-  auth(User_Role.admin),
+  auth(User_Role.admin, User_Role.superAdmin),
   upload.single('file'),
   fromDataParse,
   validateRequestData(studentZodSchema.zodValidationStudentSchema),
@@ -23,7 +23,7 @@ route.post(
 
 route.post(
   '/create-faculty',
-  auth(User_Role.admin),
+  auth(User_Role.admin, User_Role.faculty),
   upload.single('file'),
   fromDataParse,
   validateRequestData(zodValidationFacultySchema),
@@ -39,14 +39,19 @@ route.post(
 );
 route.post(
   '/change-status/:id',
-  auth('admin'),
+  auth(User_Role.admin, User_Role.superAdmin),
   validateRequestData(zodStatusUpdatedSchema),
   userController.changeStatus,
 );
 
 route.get(
   '/me',
-  auth('student', 'faculty', 'admin', 'superAdmin'),
+  auth(
+    User_Role.superAdmin,
+    User_Role.admin,
+    User_Role.faculty,
+    User_Role.student,
+  ),
   userController.getMe,
 );
 

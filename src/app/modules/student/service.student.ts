@@ -77,12 +77,7 @@ const getAllStudentIntoDB = async (query: Record<string, unknown>) => {
     MStudent.find()
       .populate('userId')
       .populate('admissionSemester')
-      .populate({
-        path: 'academicDepartment',
-        populate: {
-          path: 'academicFaculty',
-        },
-      }),
+      .populate('academicDepartment', 'academicFaculty'),
     query,
   )
     .search(searchableFields)

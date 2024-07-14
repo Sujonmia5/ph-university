@@ -13,7 +13,8 @@ const getAllFacultyController = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Faculty fetch successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

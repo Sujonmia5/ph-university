@@ -47,6 +47,7 @@ const createSemesterRegistrationIntoDB = async (
   const result = await MSemesterRegistration.create(payload);
   return result;
 };
+
 const getAllSemesterRegistrationFromDB = async (
   query: Record<string, unknown>,
 ) => {

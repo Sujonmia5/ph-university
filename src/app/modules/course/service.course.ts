@@ -5,6 +5,7 @@ import { TCourse, TCourseFaculty } from './interface.course';
 import { MCourse, MCourseFaculty } from './model.course';
 import AppError from '../../Error/appError';
 import httpStatus from 'http-status';
+import { MFaculty } from '../faculty/model.faculty';
 
 const createdCourseIntoDB = async (payload: TCourse) => {
   const { preRequisiteCourses } = payload;
@@ -122,9 +123,20 @@ const assignCourseFacultyIntoDB = async (
   payload: Partial<TCourseFaculty>,
 ) => {
   const courseExist = await MCourse.findById(id);
+
   if (!courseExist) {
-    throw new AppError(httpStatus.NOT_FOUND, 'course is not founded');
+    throw new AppError(httpStatus.NOT_FOUND, 'course is not founded!');
   }
+
+  if (payload?.faculties?.length) {
+    for (const id of payload.faculties) {
+      const isFacultiesExist = await MFaculty.findById(id);
+      if (!isFacultiesExist) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Faculty is not founded!');
+      }
+    }
+  }
+
   const result = await MCourseFaculty.findByIdAndUpdate(
     id,
     {
@@ -136,6 +148,11 @@ const assignCourseFacultyIntoDB = async (
       new: true,
     },
   );
+  return result;
+};
+
+const getCourseFacultyFromDB = async (id: string) => {
+  const result = await MCourseFaculty.findOne({ course: id });
   return result;
 };
 
@@ -163,4 +180,5 @@ export const courseService = {
   updateCourseIntoDB,
   assignCourseFacultyIntoDB,
   removeCourseFacultyIntoDB,
+  getCourseFacultyFromDB,
 };

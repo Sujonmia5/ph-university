@@ -1,3 +1,4 @@
+import httpStatus from 'http-status';
 import AppError from '../../Error/appError';
 import QueryBuilder from '../../builder/QueryBuilder';
 import {
@@ -43,13 +44,16 @@ const updateAcademicSemesterByIdIntoDB = async (
     throw new AppError(404, 'Invalid semester code');
   }
 
-  const result = await MAcademicSemester.findOneAndUpdate(
-    { _id: id },
-    payload,
-    {
-      new: true,
-    },
-  );
+  const isAcademicSemesterExist = await MAcademicSemester.findById(id);
+  if (!isAcademicSemesterExist) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Academic semester is not founded!',
+    );
+  }
+  const result = await MAcademicSemester.findById(id, payload, {
+    new: true,
+  });
   return result;
 };
 

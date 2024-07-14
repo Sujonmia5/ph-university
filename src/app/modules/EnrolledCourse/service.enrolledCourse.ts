@@ -10,6 +10,7 @@ import { MCourse } from '../course/model.course';
 import { TEnrolledCourse } from './interface.enrolledCourse';
 import { MFaculty } from '../faculty/model.faculty';
 import { marksToGradeConverter } from './utils.enrolledCourse';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createEnrollCourseIntoDB = async (
   userId: string,
@@ -131,6 +132,30 @@ const createEnrollCourseIntoDB = async (
   }
 };
 
+const myEnrolledCourseFromDB = async (
+  id: string,
+  query: Record<string, unknown>,
+) => {
+  const isStudent = await MStudent.findOne({ id });
+
+  const myCoursesQuery = new QueryBuilder(
+    MEnrolledCourse.find({
+      student: isStudent?._id,
+      academicDepartment: isStudent?.academicDepartment,
+    }),
+    query,
+  );
+
+  const result = await myCoursesQuery.queryModel;
+  const meta = await myCoursesQuery.countTotal();
+  // console.log(result);
+
+  return {
+    result,
+    meta,
+  };
+};
+
 const updatedEnrollCourseIntoDB = async (
   userId: string,
   payload: Partial<TEnrolledCourse>,
@@ -154,7 +179,7 @@ const updatedEnrollCourseIntoDB = async (
   }
 
   if (String(isFaculty._id) !== String(isEnrolledCourseExist.faculty)) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Enroll course is not founded');
+    throw new AppError(httpStatus.NOT_FOUND, 'Your course is not founded');
   }
 
   const modifiedData: Record<string, unknown> = {};
@@ -192,4 +217,5 @@ const updatedEnrollCourseIntoDB = async (
 export const enrollCourseService = {
   createEnrollCourseIntoDB,
   updatedEnrollCourseIntoDB,
+  myEnrolledCourseFromDB,
 };

@@ -10,7 +10,8 @@ const getAllAdminController = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Admin fetch successfully',
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 
